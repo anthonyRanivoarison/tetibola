@@ -1,0 +1,21 @@
+{
+  "name": "expense-tracker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["Expense tracker", "Budgeting", "Finance management"],
+  "authors": [
+    "STD23093",
+    "STD24199",
+    "STD24202",
+    "STD24211",
+    "STD24213"
+  ],
+  "license": "ISC",
+  "description": "An expense tracker and budgeting application to help users manage their finances effectively.",
+  "devDependencies": {
+    "@types/node": "^24.3.0"
+  }
+}
