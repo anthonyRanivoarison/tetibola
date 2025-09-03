@@ -78,7 +78,7 @@ export const userCreation = async (req, res) => {
     }
 
     const existingEmail = await findUserEmail(email);
-    if (existingEmail.rows[0].email === email) {
+    if (existingEmail.rows.length === 1) {
         return res.status(400).json({ Message: 'Email already exists' });
     }
 
