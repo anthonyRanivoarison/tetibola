@@ -1,9 +1,10 @@
 import { Router } from "express";
 const authRouter = Router();
+import { userCreation, verifyEmail } from "../controllers/authControllers.js";
 
-//authRouter.post('/signup', userCreation);
+authRouter.post('/signup', userCreation);
 
-//authRouter.post('/signup/verification', verifyEmail);
+authRouter.post('/signup/verification', verifyEmail);
 
 //authRouter.post('/login', userAuth);
 
