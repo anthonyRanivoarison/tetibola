@@ -7,6 +7,7 @@ import receiptsRouter from "./routes/receipts.js";
 import incomesRouter from "./routes/incomes.js";
 import expensesRouter from "./routes/expenses.js";
 import cookieParser from "cookie-parser";
+// import profileRouter from "./routes/profile.js";
 
 const app = express();
 
@@ -21,7 +22,7 @@ app.use('/expenses', expensesRouter);
 app.use('/incomes', incomesRouter);
 app.use('/summary', summaryRouter);
 app.use('/receipt', receiptsRouter);
-// app.use('/user', getUserProfile);
+// app.use('/user', profileRouter);
 
 app.get("/", (req, res) => {
     res.send("Hello from expense tracker api")

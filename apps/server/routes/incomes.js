@@ -1,9 +1,12 @@
 import { Router } from "express";
+import {verifyAuthToken} from "../controllers/authControllers.js";
+import { postIncomes, getIncomes, getIncomesById } from "../controllers/incomeController.js";
+
 const incomesRouter = Router();
 
-// incomesRouter.get('/', getIncomes); // list incomes
-// incomesRouter.post('/', postIncomes); // create a new income
-// incomesRouter.get('/:id', postIncomesById);// get an income
+incomesRouter.get('/', verifyAuthToken, getIncomes); // list incomes
+incomesRouter.post('/', verifyAuthToken, postIncomes); // create a new income
+incomesRouter.get('/:id', verifyAuthToken, getIncomesById);// get an income
 // incomesRouter.put('/:id', putIncomesById); // update an income
 // incomesRouter.delete('/:id', deleteIncomesById); // delete an income
 
