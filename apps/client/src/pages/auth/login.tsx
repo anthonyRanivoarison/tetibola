@@ -1,10 +1,11 @@
-import { Lock, Mail, ArrowRight } from "lucide-react"
+import { Lock, Mail, ArrowRight, Key } from "lucide-react"
 import { useState } from "react";
 
 
 function LoginPage() {
 
     const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     return (
         <div className="login-page bg-gray-50 h-screen w-full flex justify-center items-center">
@@ -17,32 +18,56 @@ function LoginPage() {
                         Sign In
                     </h1>
                     <p className="border-b border-dashed border-gray-300 pb-8 sm:px-4 text-gray-600">
-                        Enter your email to send a code.
+                        Enter your informations to sign in.
                     </p>
                 </div>
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="email" className="text-left font-semibold">
-                        Email adresse :
-                    </label>
-                    <div className="relative w-64 sm:w-78">
-                        <Mail
-                            size={16}
-                            className="absolute left-2 top-[31%] text-gray-400"
-                        />
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="example@gmail.com"
-                            required
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="border border-gray-300 rounded-xl pl-8 p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
+                <div className="inputs flex flex-col gap-2">
+
+                    <div className="email-input flex flex-col gap-1">
+                        <label htmlFor="email" className="text-left font-semibold">
+                            Email adresse :
+                        </label>
+                        <div className="relative w-64 sm:w-78">
+                            <Mail
+                                size={16}
+                                className="absolute left-2 top-[31%] text-gray-400"
+                            />
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="example@gmail.com"
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="border border-gray-300 rounded-xl pl-8 p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+                    </div>
+                    <div className="email-input flex flex-col gap-1">
+                        <label htmlFor="email" className="text-left font-semibold">
+                            Password :
+                        </label>
+                        <div className="relative w-64 sm:w-78">
+                            <Key
+                                size={16}
+                                className="absolute left-2 top-[31%] text-gray-400"
+                            />
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="......................................."
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="border border-gray-300 rounded-xl pl-8 p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
                     </div>
                 </div>
                 <button type="submit" className="flex flex-row justify-center gap-1 bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-800 hover:cursor-pointer transition w-64 sm:w-78">
-                    Send code
+                    Submit
                     <ArrowRight />
                 </button>
                 <div className="flex flex-col gap-1 w-[100%]">
@@ -58,4 +83,4 @@ function LoginPage() {
     )
 }
 
-export default LoginPage
+export default LoginPage;
