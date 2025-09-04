@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 import 'dotenv/config';
-import { insertUserData, findUserEmail } from "../models/authDB.js";
+import { insertUserData, findUserId, findUserEmailAndPassword, findUserEmail } from "../models/authDB.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -63,7 +63,7 @@ const passGen = () => {
 
 const getPasswordHash = async (password) => {
     try {
-        return await bcrypt.hash(password, 11);
+        return await bcrypt.hash(password, 15);
     } catch (err) {
         console.error(err);
     }
@@ -87,25 +87,31 @@ export const userCreation = async (req, res) => {
         return res.status(400).json({Message: "Password or confirmation password field is required"});
     }
 
-    if (confirmPassword !== password) {
-        return res.status(400).json({Message: "Passwords do not match"});
-    }
-
     if (password.length < 12) {
         return res.status(400).json({Message: "Password must be at least 12 character"});
     }
 
     if (!/[A-Z]/.test(password)) {
-        return res.status(400).send({Message: "Password must have contain least one uppercase letter"});
+        return res.status(400).send({Message: "Password must contain least one uppercase letter"});
     }
+
     if (!/[a-z]/.test(password)) {
         return res.status(400).send({Message: "Password must contain at least one lowercase letter"});
     }
+
     if (!/[0-9]/.test(password)) {
         return res.status(400).send({Message: "Password must contain at least one digit"});
     }
-    if (!/[*?~#_+!&%$@.]/.test(password)) {
-        return res.status(400).send({Message: "Password must contain at least one of these specials characters: *?~#_+!&%$@."});
+
+    if (!/[*?~#_+!&%$@.(){}|]/.test(password)) {
+        return res.status(400).send({Message: "Password must contain at least one of these specials characters: *?~#_+!&%$@.(){}|"});
+    }
+
+    if (/[-;=']/.test(password)) {
+        return res.status(400).send({Message: "Password contain prohibited characters"});
+    }
+    if (confirmPassword !== password) {
+        return res.status(400).json({Message: "Passwords do not match"});
     }
 
     memory.set("verificationCode", verificationCode);
@@ -117,7 +123,7 @@ export const userCreation = async (req, res) => {
 
 }
 
-export const verifyEmail = async (req, res) => {
+export const verifyEmailOnSignIn = async (req, res) => {
     const { clientCode } = req.body;
     const verificationCode = memory.get("verificationCode");
     const email = memory.get("email");
@@ -138,4 +144,75 @@ export const verifyEmail = async (req, res) => {
         return res.status(200).send({ Message: "Registration success, you can log in" });
     }
     return res.status(400).send({ Message: "Email verification failed" });
+}
+
+export const userAuth = async (req, res) => {
+    const { email, password } = req.body;
+
+    const invalidEmail = sanitizeAndValidEmail(email);
+    if (invalidEmail) {
+        return res.status(400).json(invalidEmail);
+    }
+
+    if (!password){
+        return res.status(400).send({ Message: "Password is required" });
+    }
+
+    if (/[-;=']/.test(password)) {
+        return res.status(400).send({ Message: "Password contain prohibited characters" });
+    }
+
+    const existingData = await findUserEmailAndPassword(email);
+    try {
+        const result = await bcrypt.compare(password, existingData.rows[0].password);
+        if (!result) {
+            return res.status(404).json({ Message: "Theses credentials does not match our record, ensure your password is correct or register before sign in" });
+        }
+        const pass = passGen();
+        memory.set("verificationCode", pass);
+        memory.set("email", email);
+        mailSender(email, pass);
+        return res.status(200).json({ Message: `An email was sent to ${email} to confirm authentication` });
+    }
+    catch (error) {
+        return res.status(404).json({ Message: "Theses credentials does not match our record, ensure your password is correct or register before sign in" });
+    }
+}
+
+export const verifyEmailOnLogIn = async (req, res) => {
+    const { clientCode } = req.body;
+    const verificationCode = memory.get("verificationCode");
+    const email = memory.get("email");
+    const allowedInput = /^[A-Z]+$/;
+
+    if (!clientCode){
+        return res.status(400).send({ Message: "Verification Code is required" });
+    }
+
+    if (!allowedInput.test(clientCode)){
+        return res.status(400).json({ message: 'The verification code contain an invalid character'});
+    }
+
+    if (clientCode === verificationCode){
+        const userData = await findUserId(email);
+        const jwtoken = jwt.sign({ id: userData.rows[0].id, email: `${email}` }, process.env.JWT_SECRET, { expiresIn: "6h" });
+        return res.cookie("token", jwtoken, { httpOnly: true, sameSite: "strict", maxAge: 1000 * 60 * 60 * 6 }).status(200).json({ Message: 'Authenticated' });
+    }
+    return res.status(400).send({ Message: "Verification failed" });
+}
+
+export const verifyAuthToken = (req, res, next) => {
+    const { clientToken } = req.cookies;
+    if (!clientToken) {
+        return res.status(401).json({message: 'Authorization required'});
+    }
+
+    jwt.verify(clientToken, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(403).json({ message: 'Invalid token' });
+        }
+        req.user = decoded;
+        next();
+        return res.status(200).json({ Message: 'Authenticated' });
+    })
 }
