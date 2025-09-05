@@ -54,3 +54,56 @@ export const findUserIncomesById = (Id) => {
     }
     return connection.query(sqlQuery);
 }
+
+export const deleteById = (Id) => {
+    const sqlQuery = {
+        text: 'DELETE FROM incomes WHERE id = $1',
+        values: [Id]
+    }
+    return connection.query(sqlQuery);
+}
+
+export const updateData = (date = null, amount = null, source = null, description = null, id) => {
+    let query = 'UPDATE incomes SET ';
+    let sets = [];
+    let values = [];
+    let index = 1;
+
+    if (date !== null) {
+        sets.push(`date = $${index}`);
+        values.push(date);
+        index++;
+    }
+
+    if (source !== null) {
+        sets.push(`source = $${index}`);
+        values.push(source);
+        index++;
+    }
+
+    if (description !== null) {
+        sets.push(`description = $${index}`);
+        values.push(description);
+        index++;
+    }
+
+    if (amount !== null) {
+        sets.push(`amount = $${index}`);
+        values.push(amount);
+        index++;
+    }
+
+    if (sets.length === 0) {
+        throw new Error("Aucun champ à mettre à jour");
+    }
+
+    query += sets.join(", ") + ` WHERE id = $${index}`;
+    values.push(id);
+
+    const sqlQuery = {
+        text: query,
+        values
+    };
+
+    return connection.query(sqlQuery);
+}
