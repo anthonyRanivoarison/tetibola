@@ -54,8 +54,8 @@ const sanitizeAndValidEmail = (email) => {
 const memory = new Map()
 const passGen = () => {
     let pass = "";
-    for (let i = 0; i < 10; i++){
-        let randomDigit = crypto.randomInt(65, 90);
+    for (let i = 0; i < 6; i++){
+        let randomDigit = crypto.randomInt(65, 91);
         pass += String.fromCharCode(randomDigit);
     }
     return pass;
@@ -214,4 +214,5 @@ export const verifyAuthToken = (req, res, next) => {
         req.user = decoded;
         next();
     })
+
 }
