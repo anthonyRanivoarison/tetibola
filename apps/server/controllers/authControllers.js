@@ -195,24 +195,23 @@ export const verifyEmailOnLogIn = async (req, res) => {
 
     if (clientCode === verificationCode){
         const userData = await findUserId(email);
-        const jwtoken = jwt.sign({ id: userData.rows[0].id, email: `${email}` }, process.env.JWT_SECRET, { expiresIn: "6h" });
-        return res.cookie("token", jwtoken, { httpOnly: true, sameSite: "strict", maxAge: 1000 * 60 * 60 * 6 }).status(200).json({ Message: 'Authenticated' });
+        const token = jwt.sign({ id: userData.rows[0].id, email: `${email}` }, process.env.JWT_SECRET, { expiresIn: "6h" });
+        return res.cookie("token", token, { httpOnly: true, secure: false, sameSite: "strict", maxAge: 1000 * 60 * 60 * 6 }).status(200).json({ Message: 'Authenticated' });
     }
     return res.status(400).send({ Message: "Verification failed" });
 }
 
 export const verifyAuthToken = (req, res, next) => {
-    const { clientToken } = req.cookies;
-    if (!clientToken) {
-        return res.status(401).json({message: 'Authorization required'});
+    const { token } = req.cookies;
+    if (!token) {
+        return res.status(401).json({ Message: 'Authorization required' });
     }
 
-    jwt.verify(clientToken, process.env.JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
-            return res.status(403).json({ message: 'Invalid token' });
+            return res.status(403).json({ Message: 'Invalid token' });
         }
         req.user = decoded;
         next();
-        return res.status(200).json({ Message: 'Authenticated' });
     })
 }
