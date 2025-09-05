@@ -15,17 +15,18 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home/>}/>
-        <Route path="/login" element={<Login/>}/>
-        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/login" element={<LoginPage/>}/>
+        <Route path="/signup" element={<SignupPage/>}/>
 
         <Route element={<DefaultAppLayout/>}>
           <Route path="/dashboard" element={<Dashboard/>}/>
           <Route path="/categories" element={<Categories/>}/>
-          <Route path="/expenses" element={<ExpensesPage />} />
+          <Route path="/expenses" element={<ExpensesPage/>}/>
           <Route path="/incomes" element={<Incomes/>}/>
           <Route path="/receipts" element={<Receipts/>}/>
           <Route path="/profile" element={<UserProfile/>}/>
-       </Route>
+        </Route>
+      </Routes>
     </BrowserRouter>
 
   );
