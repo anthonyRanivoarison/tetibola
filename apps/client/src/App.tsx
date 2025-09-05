@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {BrowserRouter, Routes, Route} from "react-router-dom";
+import DefaultAppLayout from "./layouts/app-layout.tsx"
 import Home from "./pages/Home";
 import LoginPage from "./pages/auth/login";
 import SignupPage from "./pages/auth/Signup";
@@ -13,16 +14,18 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<Home/>}/>
+        <Route path="/login" element={<Login/>}/>
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/categories" element={<Categories />} />
-        <Route path="/expenses" element={<ExpensesPage />} />
-        <Route path="/incomes" element={<Incomes />} />
-        <Route path="/receipts" element={<Receipts />} />
-        <Route path="/profile" element={<UserProfile />} />
-      </Routes>
+
+        <Route element={<DefaultAppLayout/>}>
+          <Route path="/dashboard" element={<Dashboard/>}/>
+          <Route path="/categories" element={<Categories/>}/>
+          <Route path="/expenses" element={<ExpensesPage />} />
+          <Route path="/incomes" element={<Incomes/>}/>
+          <Route path="/receipts" element={<Receipts/>}/>
+          <Route path="/profile" element={<UserProfile/>}/>
+       </Route>
     </BrowserRouter>
 
   );
