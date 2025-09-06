@@ -1,106 +1,113 @@
-import { Lock, Mail, ArrowRight, Key, ChevronLeft } from "lucide-react"
-import { useState } from "react";
+import React, {useState} from "react";
+import {useFetch} from "../../hooks/api";
+import {Alert} from "../../components/ui/Alert";
+import {ArrowRight, ChevronLeft, Lock} from "lucide-react";
+import AuthInputs from "../../components/templates/auth-inputs";
+import VerificationCodeInput from "../../components/templates/VerificationCode";
+import {useVerification} from "../../hooks/verification";
 
+type AlertType = "error" | "success" | "info";
 
-function SignupPage() {
+const SignupPage = () => {
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+  const [step, setStep] = useState<"signup" | "verify">("signup");
+  const [alert, setAlert] = useState<{ title: string; content: string; type: AlertType } | null>(
+    null
+  );
 
-    return (
-        <div className="login-page bg-gray-50 h-screen w-full flex justify-center items-center">
-            <form className='login-form relative bg-white h-auto w-auto py-6 sm:px-8 px-6 shadow-xl text-center flex flex-col justify-center items-center gap-6 rounded-3xl'>
-                <a href="/login">
-                    <ChevronLeft
-                        size={35}
-                        className="absolute top-4 left-4 cursor-pointer"
-                    />
-                </a>
-                <div className="icon bg-gray-100 p-4 rounded-full shadow-md">
-                    <Lock />
-                </div>
-                <div className="flex flex-col gap-2">
-                    <h1 className="text-2xl font-bold">
-                        Sign Up
-                    </h1>
-                    <p className="border-b border-dashed border-gray-300 pb-8 sm:px-4 text-gray-600">
-                        Create your account to get started.
-                    </p>
-                </div>
-                <div className="inputs flex flex-col gap-2">
+  const {verificationCode, setVerificationCode, handleVerify} = useVerification(6);
 
-                    <div className="email-input flex flex-col gap-1">
-                        <label htmlFor="email" className="text-left font-semibold">
-                            Email adresse :
-                        </label>
-                        <div className="relative w-64 sm:w-78">
-                            <Mail
-                                size={16}
-                                className="absolute left-2 top-[31%] text-gray-400"
-                            />
-                            <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                placeholder="example@gmail.com"
-                                required
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="border border-gray-300 rounded-xl pl-8 p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-                    </div>
-                    <div className="password-input flex flex-col gap-1">
-                        <label htmlFor="email" className="text-left font-semibold">
-                            Password :
-                        </label>
-                        <div className="relative w-64 sm:w-78">
-                            <Key
-                                size={16}
-                                className="absolute left-2 top-[31%] text-gray-400"
-                            />
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                placeholder="......................................."
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="border border-gray-300 rounded-xl pl-8 p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-                    </div>
-                    <div className="confirm-password-input flex flex-col gap-1">
-                        <label htmlFor="email" className="text-left font-semibold">
-                            Confirm Password :
-                        </label>
-                        <div className="relative w-64 sm:w-78">
-                            <Key
-                                size={16}
-                                className="absolute left-2 top-[31%] text-gray-400"
-                            />
-                            <input
-                                type="password"
-                                id="confirmPassword"
-                                name="confirmPassword"
-                                placeholder="......................................."
-                                required
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="border border-gray-300 rounded-xl pl-8 p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-                    </div>
-                </div>
-                <button type="submit" className="flex flex-row justify-center gap-1 bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-800 hover:cursor-pointer transition w-64 sm:w-78">
-                    Submit
-                    <ArrowRight />
-                </button>
-            </form>
+  const {error, isLoading, refetch} = useFetch({
+    url: "/auth/signup",
+    method: "POST",
+    data: form,
+    keys: ["auth", form.email],
+    enable: false,
+  });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (form.password !== form.confirmPassword) {
+      setAlert({title: "Error", content: "Passwords don't match", type: "error"});
+      return;
+    }
+
+    try {
+      await refetch();
+      setStep("verify");
+      setAlert({title: "Info", content: `Verification code sent to ${form.email}`, type: "info"});
+    } catch (err) {
+      console.error(err);
+      setAlert({title: "Error", content: "Signup failed", type: "error"});
+    }
+  };
+
+  const handleCodeVerification = async () => {
+    try {
+      await handleVerify("/auth/signup/verification", {email: form.email});
+      setAlert({title: "Success", content: "Account verified!", type: "success"});
+      setTimeout(() => (window.location.href = "/login"), 3000);
+    } catch (err) {
+      console.error(err);
+      setAlert({title: "Error", content: "Invalid verification code", type: "error"});
+    }
+  };
+
+  if (error) setAlert({title: "Error", content: "Sending data failed", type: "error"});
+
+  return (
+    <div className="signup-page bg-gray-50 h-screen w-full flex justify-center items-center">
+      {alert && <Alert title={alert.title} content={alert.content} type={alert.type}/>}
+
+      <form
+        onSubmit={handleSubmit}
+        className="signup-form relative bg-white py-6 px-6 sm:px-8 shadow-xl rounded-3xl flex flex-col items-center gap-6 text-center"
+      >
+        <a href="/apps/client/src/pages/auth/Login">
+          <ChevronLeft size={35} className="absolute top-4 left-4 cursor-pointer"/>
+        </a>
+
+        <div className="icon bg-gray-100 p-4 rounded-full shadow-md">
+          <Lock/>
         </div>
-    )
-}
+
+        <div className="text-section flex flex-col gap-2">
+          <h1 className="text-2xl font-bold">Sign Up</h1>
+          <p className="border-b border-dashed border-gray-300 pb-8 sm:px-4 text-gray-600">
+            Create your account to get started.
+          </p>
+        </div>
+
+        <div className="inputs flex flex-col gap-4">
+          {step === "signup" ? (
+            <AuthInputs data={form} setData={setForm}/>
+          ) : (
+            <VerificationCodeInput
+              code={verificationCode}
+              setCode={setVerificationCode}
+              onVerify={handleCodeVerification}
+            />
+          )}
+        </div>
+
+        {step === "signup" && (
+          <button
+            type="submit"
+            className="flex items-center justify-center gap-1 bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-800 transition w-64 sm:w-78"
+          >
+            {isLoading ? "Loading..." : "Submit"}
+            <ArrowRight/>
+          </button>
+        )}
+      </form>
+    </div>
+  );
+};
 
 export default SignupPage;

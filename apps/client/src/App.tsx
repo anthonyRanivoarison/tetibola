@@ -1,7 +1,7 @@
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import DefaultAppLayout from "./layouts/app-layout.tsx"
 import Home from "./pages/Home";
-import LoginPage from "./pages/auth/login";
+import LoginPage from "./pages/auth/Login.tsx";
 import SignupPage from "./pages/auth/Signup";
 import Dashboard from "./pages/Dashboard";
 import Categories from "./pages/Categories";
