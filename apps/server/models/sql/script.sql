@@ -57,13 +57,13 @@ CREATE TABLE public.expense (
 ALTER TABLE public.expense OWNER TO postgres;
 
 --
--- Name: income; Type: TABLE; Schema: public; Owner: postgres
+-- Name: incomes; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.income (
+CREATE TABLE public.incomes (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     amount double precision NOT NULL,
-    date date DEFAULT CURRENT_DATE NOT NULL,
+    date date,
     source character varying(30) NOT NULL,
     description text,
     creation_date date DEFAULT CURRENT_DATE,
@@ -71,7 +71,7 @@ CREATE TABLE public.income (
 );
 
 
-ALTER TABLE public.income OWNER TO postgres;
+ALTER TABLE public.incomes OWNER TO postgres;
 
 --
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
@@ -80,8 +80,10 @@ ALTER TABLE public.income OWNER TO postgres;
 CREATE TABLE public.users (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     email character varying(50) NOT NULL,
-    password character varying(35) NOT NULL,
-    creation_date date DEFAULT CURRENT_DATE
+    password character varying(70) NOT NULL,
+    creation_date date DEFAULT CURRENT_DATE,
+    first_name character varying(20),
+    last_name character varying(35)
 );
 
 
@@ -92,10 +94,6 @@ ALTER TABLE public.users OWNER TO postgres;
 --
 
 COPY public.category (id, name, is_active, expense_id) FROM stdin;
-db0f4987-f170-46ce-b32a-94e5b64b320b	game	t	e0662798-34cd-4815-94fe-64abb619edb7
-eae71d75-6dac-492c-811d-3544c7b4d03c	game	t	130d688b-4704-4ddb-ab3d-fda0fc584510
-0fe045e9-fac7-42f0-9e30-b0a7b5b74e98	streaming	t	cc9123b3-b1c6-45c5-93d5-9e02a6584321
-749c3c0f-7fe1-448d-ae8d-cdb8fc0261ea	rent	t	3b4ce6d7-dcdb-4fd1-b9b9-fe6daf99f199
 80c5c1c7-8a9f-43e2-82de-2e0f79e6a047	other	f	\N
 cf0a72b6-0034-4e79-833b-63b192075bd2	utilities	f	\N
 \.
@@ -106,23 +104,18 @@ cf0a72b6-0034-4e79-833b-63b192075bd2	utilities	f	\N
 --
 
 COPY public.expense (id, amount, date, description, reccuring, receipt_upload, creation_date, start_date, end_date, user_id) FROM stdin;
-3b4ce6d7-dcdb-4fd1-b9b9-fe6daf99f199	500	2025-08-25	\N	f	http://domain.com/uploads/receipt.png	2025-08-25	2025-08-25	\N	3978b1a1-87b0-4018-ad5d-21d68dabdd97
-cc9123b3-b1c6-45c5-93d5-9e02a6584321	15.5	2025-08-25	netflix	t	\N	2025-08-25	2025-08-01	2025-12-01	3978b1a1-87b0-4018-ad5d-21d68dabdd97
-e0662798-34cd-4815-94fe-64abb619edb7	15.5	2025-08-25	gaming	t	\N	2025-08-25	2025-08-01	\N	3978b1a1-87b0-4018-ad5d-21d68dabdd97
-130d688b-4704-4ddb-ab3d-fda0fc584510	1499.99	2025-05-10	gamin pc	f	\N	2025-08-25	2025-08-25	\N	9e832813-af83-4885-b4bb-dd2c0d4d8797
 \.
 
 
 --
--- Data for Name: income; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: incomes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.income (id, amount, date, source, description, creation_date, user_id) FROM stdin;
-d43dbe64-deaa-42ac-8fb7-d2de141e132c	200.99	2025-05-15	mission	\N	2025-08-27	963474e1-3daf-4f30-b6a0-b499ac0be0be
-a255a73b-68bb-4108-b5ef-21e401c02830	525	2025-08-27	salary	\N	2025-08-27	3978b1a1-87b0-4018-ad5d-21d68dabdd97
-bac05d96-3e64-49f8-b90f-e2c0468352d1	400	2025-08-27	selling pc	\N	2025-08-27	3978b1a1-87b0-4018-ad5d-21d68dabdd97
-8c763ec4-6bac-4e01-85bb-ad44be899392	100	2025-08-27	money borrowed	\N	2025-08-27	3978b1a1-87b0-4018-ad5d-21d68dabdd97
-efe37806-1270-455e-a605-d1a4f2e32c0d	50	2025-08-27	helping the sheriff	\N	2025-08-27	9e832813-af83-4885-b4bb-dd2c0d4d8797
+COPY public.incomes (id, amount, date, source, description, creation_date, user_id) FROM stdin;
+f6f76718-7634-4fa8-962d-93c76e0c44b3	25000	2025-06-15	test 3	\N	2025-09-04	67d921c7-b7d1-4d41-bebd-019a7e7d77d7
+e62c7886-d388-4c88-9085-d190e3587e3d	35000	2025-06-15	test 5	\N	2025-09-04	67d921c7-b7d1-4d41-bebd-019a7e7d77d7
+e5f93073-eeff-470a-bbc0-1a345c5b28e9	5000	2025-11-15	updating data	test	2025-09-04	67d921c7-b7d1-4d41-bebd-019a7e7d77d7
+8fea2e7b-ee00-45ff-bd6d-5ed64d51d2d5	120000	2025-06-15	updating data 2	test updating data 2	2025-09-04	67d921c7-b7d1-4d41-bebd-019a7e7d77d7
 \.
 
 
@@ -130,10 +123,11 @@ efe37806-1270-455e-a605-d1a4f2e32c0d	50	2025-08-27	helping the sheriff	\N	2025-0
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users (id, email, password, creation_date) FROM stdin;
-963474e1-3daf-4f30-b6a0-b499ac0be0be	Decon@example.com	azerty	2025-08-25
-9e832813-af83-4885-b4bb-dd2c0d4d8797	john@example.com	123456789	2025-08-25
-3978b1a1-87b0-4018-ad5d-21d68dabdd97	alice@example.com	r$*tuf!@	2025-08-25
+COPY public.users (id, email, password, creation_date, first_name, last_name) FROM stdin;
+58c3e59f-412f-409b-aa4d-06fa2bc649e2	john@example.com	$2b$11$QgHqDVcpuQg8grfuePWhRez8tjAzSfSQ5qAZFfSY1QSXx.jIx5nDa	2025-09-03	\N	\N
+f7ba3214-fce3-46e2-8272-53592ce95ea1	alice@example.com	$2b$15$7KkRoPByMp8qSMU/dD6Bx.R77Q0aNjOqYTfuAC4nc1WPQeODOcLna	2025-09-03	\N	\N
+54a23c52-39f9-4cdc-bbe7-689fb964aba8	bob@example.com	$2b$15$1E8qNDcy0kHlBYTJOp9tq.Aw2JgzeObcnLrFNx/hcZPJmjXeTjQFO	2025-09-03	\N	\N
+67d921c7-b7d1-4d41-bebd-019a7e7d77d7	andrianombana0@gmail.com	$2b$15$zrDtKUgiQLBrsWa.h1mErOV8ZRuUxBx6fKz6CfRDSpZhWRtK7YUiq	2025-09-04	\N	\N
 \.
 
 
@@ -154,10 +148,10 @@ ALTER TABLE ONLY public.expense
 
 
 --
--- Name: income income_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: incomes income_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.income
+ALTER TABLE ONLY public.incomes
     ADD CONSTRAINT income_pkey PRIMARY KEY (id);
 
 
@@ -201,10 +195,10 @@ ALTER TABLE ONLY public.expense
 
 
 --
--- Name: income fk_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: incomes fk_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.income
+ALTER TABLE ONLY public.incomes
     ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
@@ -223,10 +217,10 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.expense TO admin;
 
 
 --
--- Name: TABLE income; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE incomes; Type: ACL; Schema: public; Owner: postgres
 --
 
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.income TO admin;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.incomes TO admin;
 
 
 --
