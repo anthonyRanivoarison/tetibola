@@ -81,7 +81,9 @@ CREATE TABLE public.users (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     email character varying(50) NOT NULL,
     password character varying(70) NOT NULL,
-    creation_date date DEFAULT CURRENT_DATE
+    creation_date date DEFAULT CURRENT_DATE,
+    first_name character varying(20),
+    last_name character varying(35)
 );
 
 
@@ -110,11 +112,10 @@ COPY public.expense (id, amount, date, description, reccuring, receipt_upload, c
 --
 
 COPY public.incomes (id, amount, date, source, description, creation_date, user_id) FROM stdin;
-e5f93073-eeff-470a-bbc0-1a345c5b28e9	5000	2025-09-04	test	test	2025-09-04	67d921c7-b7d1-4d41-bebd-019a7e7d77d7
-7db6dad7-dbcd-4c81-bd6a-d86de27ab536	15000	\N	test 2	\N	2025-09-04	67d921c7-b7d1-4d41-bebd-019a7e7d77d7
 f6f76718-7634-4fa8-962d-93c76e0c44b3	25000	2025-06-15	test 3	\N	2025-09-04	67d921c7-b7d1-4d41-bebd-019a7e7d77d7
 e62c7886-d388-4c88-9085-d190e3587e3d	35000	2025-06-15	test 5	\N	2025-09-04	67d921c7-b7d1-4d41-bebd-019a7e7d77d7
-8fea2e7b-ee00-45ff-bd6d-5ed64d51d2d5	55000	2025-06-15	test 6	test 6 content	2025-09-04	67d921c7-b7d1-4d41-bebd-019a7e7d77d7
+e5f93073-eeff-470a-bbc0-1a345c5b28e9	5000	2025-11-15	updating data	test	2025-09-04	67d921c7-b7d1-4d41-bebd-019a7e7d77d7
+8fea2e7b-ee00-45ff-bd6d-5ed64d51d2d5	120000	2025-06-15	updating data 2	test updating data 2	2025-09-04	67d921c7-b7d1-4d41-bebd-019a7e7d77d7
 \.
 
 
@@ -122,11 +123,11 @@ e62c7886-d388-4c88-9085-d190e3587e3d	35000	2025-06-15	test 5	\N	2025-09-04	67d92
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users (id, email, password, creation_date) FROM stdin;
-58c3e59f-412f-409b-aa4d-06fa2bc649e2	john@example.com	$2b$11$QgHqDVcpuQg8grfuePWhRez8tjAzSfSQ5qAZFfSY1QSXx.jIx5nDa	2025-09-03
-f7ba3214-fce3-46e2-8272-53592ce95ea1	alice@example.com	$2b$15$7KkRoPByMp8qSMU/dD6Bx.R77Q0aNjOqYTfuAC4nc1WPQeODOcLna	2025-09-03
-54a23c52-39f9-4cdc-bbe7-689fb964aba8	bob@example.com	$2b$15$1E8qNDcy0kHlBYTJOp9tq.Aw2JgzeObcnLrFNx/hcZPJmjXeTjQFO	2025-09-03
-67d921c7-b7d1-4d41-bebd-019a7e7d77d7	test@gmail.com	$2b$15$zrDtKUgiQLBrsWa.h1mErOV8ZRuUxBx6fKz6CfRDSpZhWRtK7YUiq	2025-09-04
+COPY public.users (id, email, password, creation_date, first_name, last_name) FROM stdin;
+58c3e59f-412f-409b-aa4d-06fa2bc649e2	john@example.com	$2b$11$QgHqDVcpuQg8grfuePWhRez8tjAzSfSQ5qAZFfSY1QSXx.jIx5nDa	2025-09-03	\N	\N
+f7ba3214-fce3-46e2-8272-53592ce95ea1	alice@example.com	$2b$15$7KkRoPByMp8qSMU/dD6Bx.R77Q0aNjOqYTfuAC4nc1WPQeODOcLna	2025-09-03	\N	\N
+54a23c52-39f9-4cdc-bbe7-689fb964aba8	bob@example.com	$2b$15$1E8qNDcy0kHlBYTJOp9tq.Aw2JgzeObcnLrFNx/hcZPJmjXeTjQFO	2025-09-03	\N	\N
+67d921c7-b7d1-4d41-bebd-019a7e7d77d7	andrianombana0@gmail.com	$2b$15$zrDtKUgiQLBrsWa.h1mErOV8ZRuUxBx6fKz6CfRDSpZhWRtK7YUiq	2025-09-04	\N	\N
 \.
 
 
