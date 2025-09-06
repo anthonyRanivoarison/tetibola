@@ -36,10 +36,10 @@ CREATE TABLE public.category (
 ALTER TABLE public.category OWNER TO postgres;
 
 --
--- Name: expense; Type: TABLE; Schema: public; Owner: postgres
+-- Name: expenses; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.expense (
+CREATE TABLE public.expenses (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     amount double precision NOT NULL,
     date date DEFAULT CURRENT_DATE,
@@ -54,7 +54,7 @@ CREATE TABLE public.expense (
 );
 
 
-ALTER TABLE public.expense OWNER TO postgres;
+ALTER TABLE public.expenses OWNER TO postgres;
 
 --
 -- Name: incomes; Type: TABLE; Schema: public; Owner: postgres
@@ -100,10 +100,16 @@ cf0a72b6-0034-4e79-833b-63b192075bd2	utilities	f	\N
 
 
 --
--- Data for Name: expense; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: expenses; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.expense (id, amount, date, description, reccuring, receipt_upload, creation_date, start_date, end_date, user_id) FROM stdin;
+COPY public.expenses (id, amount, date, description, reccuring, receipt_upload, creation_date, start_date, end_date, user_id) FROM stdin;
+f70e5730-c158-4cfb-81c3-68dd0e559475	12000	2025-09-06	Abonnement Spotify	t	\N	2025-09-06	2025-01-01	2025-12-31	67d921c7-b7d1-4d41-bebd-019a7e7d77d7
+6bdb9a60-ec48-41fb-83ff-55f448d8fec3	25000	2025-09-06	Abonnement netflix	t	\N	2025-09-06	2025-01-01	\N	67d921c7-b7d1-4d41-bebd-019a7e7d77d7
+0b16ca0c-6e8a-4bec-bd63-0895354e5a07	120000	2025-09-05	gaming keyboard	f	\N	2025-09-06	\N	\N	67d921c7-b7d1-4d41-bebd-019a7e7d77d7
+c7129338-dfb3-4a95-a46f-b7d4ca1ac690	50000	2025-09-05	restaurant	f	http://localhost/uploads/receipt.pdf	2025-09-06	\N	\N	67d921c7-b7d1-4d41-bebd-019a7e7d77d7
+9adb9734-2d38-4b0b-b550-01d43ebc334a	22000	2025-09-05	game pass	f	\N	2025-09-06	\N	\N	67d921c7-b7d1-4d41-bebd-019a7e7d77d7
+817dca66-629d-41c7-b4fa-09023498b636	40000	2025-09-05	gaming mouse	f	\N	2025-09-06	\N	\N	54a23c52-39f9-4cdc-bbe7-689fb964aba8
 \.
 
 
@@ -127,7 +133,7 @@ COPY public.users (id, email, password, creation_date, first_name, last_name) FR
 58c3e59f-412f-409b-aa4d-06fa2bc649e2	john@example.com	$2b$11$QgHqDVcpuQg8grfuePWhRez8tjAzSfSQ5qAZFfSY1QSXx.jIx5nDa	2025-09-03	\N	\N
 f7ba3214-fce3-46e2-8272-53592ce95ea1	alice@example.com	$2b$15$7KkRoPByMp8qSMU/dD6Bx.R77Q0aNjOqYTfuAC4nc1WPQeODOcLna	2025-09-03	\N	\N
 54a23c52-39f9-4cdc-bbe7-689fb964aba8	bob@example.com	$2b$15$1E8qNDcy0kHlBYTJOp9tq.Aw2JgzeObcnLrFNx/hcZPJmjXeTjQFO	2025-09-03	\N	\N
-67d921c7-b7d1-4d41-bebd-019a7e7d77d7	andrianombana0@gmail.com	$2b$15$zrDtKUgiQLBrsWa.h1mErOV8ZRuUxBx6fKz6CfRDSpZhWRtK7YUiq	2025-09-04	\N	\N
+67d921c7-b7d1-4d41-bebd-019a7e7d77d7	test@gmail.com	$2b$15$zrDtKUgiQLBrsWa.h1mErOV8ZRuUxBx6fKz6CfRDSpZhWRtK7YUiq	2025-09-04	\N	\N
 \.
 
 
@@ -140,10 +146,10 @@ ALTER TABLE ONLY public.category
 
 
 --
--- Name: expense expense_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: expenses expense_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.expense
+ALTER TABLE ONLY public.expenses
     ADD CONSTRAINT expense_pkey PRIMARY KEY (id);
 
 
@@ -175,7 +181,7 @@ ALTER TABLE ONLY public.users
 -- Name: user_expense_index; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX user_expense_index ON public.expense USING btree (user_id);
+CREATE INDEX user_expense_index ON public.expenses USING btree (user_id);
 
 
 --
@@ -183,14 +189,14 @@ CREATE INDEX user_expense_index ON public.expense USING btree (user_id);
 --
 
 ALTER TABLE ONLY public.category
-    ADD CONSTRAINT fk_expense_id FOREIGN KEY (expense_id) REFERENCES public.expense(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_expense_id FOREIGN KEY (expense_id) REFERENCES public.expenses(id) ON DELETE CASCADE;
 
 
 --
--- Name: expense fk_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: expenses fk_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.expense
+ALTER TABLE ONLY public.expenses
     ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
@@ -210,10 +216,10 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.category TO admin;
 
 
 --
--- Name: TABLE expense; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE expenses; Type: ACL; Schema: public; Owner: postgres
 --
 
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.expense TO admin;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.expenses TO admin;
 
 
 --
