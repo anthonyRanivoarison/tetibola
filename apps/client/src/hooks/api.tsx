@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
 import {type AxiosRequestConfig} from "axios";
-import {api} from "../api/base"
+import {api} from "../api/base";
 
 interface FetchData {
   url: string;
@@ -11,14 +11,14 @@ interface FetchData {
   enable?: boolean;
 }
 
-export const useFetch = ({url, method, data, headers, keys}: FetchData) => {
+export const useFetch = ({url, method, data, headers, keys, enable = true}: FetchData) => {
   return useQuery({
     queryKey: keys || [url],
     queryFn: async () => {
-      const config: AxiosRequestConfig = {method, url, headers, data};
+      const config: AxiosRequestConfig = {method, url, headers, data, withCredentials: true};
       const res = await api.request(config);
       return res.data;
     },
-    enabled: false,
+    enabled: enable,
   });
 };
