@@ -11,8 +11,8 @@ const validAndSanitizeDate = (date) => {
 export const postIncomes = async (req, res) => {
     const { amount, date, source, description } = req.body;
 
-    if (!amount || !source){
-        return res.status(400).send({ Message: 'amount and source fields are required' });
+    if (!amount || !source || !date){
+        return res.status(400).send({ Message: 'amount, date and source fields are required' });
     }
     if (amount < 1 || !/[0-9]/.test(amount)){
         return res.status(400).send({ Message: 'Invalid amount' });

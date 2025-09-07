@@ -1,6 +1,6 @@
 import {connection} from "./connectionToDB.js";
 
-export const insertUserIncomes = async (amount, date = null, source, description = null, userId) => {
+export const insertUserIncomes = async (amount, date, source, description = null, userId) => {
     try {
         const sqlQuery = {
             text: 'INSERT INTO incomes(amount, date, source, description, user_id) VALUES($1, $2, $3, $4, $5)',
