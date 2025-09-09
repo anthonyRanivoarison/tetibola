@@ -78,7 +78,7 @@ export const getAlert = async (req, res) => {
     return res.status(200).json({ Message: `you saved ${differences}` })
 }
 
-export const getCustomRangeSummary = async (req, res) => { // check later sql query issues
+export const getCustomRangeSummary = async (req, res) => { 
     const id = req.user.id;
     const { startDate, endDate } = req.query;
 
