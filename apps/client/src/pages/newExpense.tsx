@@ -1,5 +1,5 @@
 import React, {useState, useEffect, type ChangeEvent, type FormEvent} from "react";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {Button} from "../components/ui/Button";
 import {Input} from "../components/ui/Input";
 import {Alert} from "../components/ui/Alert";
@@ -12,6 +12,7 @@ import type {ExpenseFormData} from "../types/expenses";
 const NewExpense: React.FC = () => {
   const location = useLocation();
   const expenseID = new URLSearchParams(location.search).get("edit");
+  const navigate = useNavigate();
 
   const [form, setForm] = useState<ExpenseFormData>({
     amount: "",
@@ -73,9 +74,9 @@ const NewExpense: React.FC = () => {
         withCredentials: true,
       });
 
-      setForm({amount: "", category: "", description: "", type: "One-time", receipt: null});
+      navigate("../expenses");
       setStatus("idle");
-    } catch (err: any) {
+    } catch (err: never) {
       setStatus("error");
       setMessage(err?.response?.data?.message || "Failed to save expense");
     }

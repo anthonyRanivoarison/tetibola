@@ -7,3 +7,22 @@ body {
 .dancing-script-font {
     font-family: 'Dancing script', "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #062e60 #f1f1f1;
+}
