@@ -78,26 +78,25 @@ export const getAllNotRecurringExpenseSummary = (userId) => {
     }
 }
 
-const getAllSummaryCustomRange = (startDate = null, endDate = null, userId, tableName) => {
+const getAllSummaryCustomRange = (startDate = null, endDate = null, userId, tableName, columnName) => {
     try {
-        let query = `SELECT id, amount, date, source, description, creation_date FROM ${tableName} WHERE user_id = $1 `;
+        let query = `SELECT id, amount, date, ${columnName}, description, creation_date FROM ${tableName} WHERE user_id = $1`;
         let sets = [];
         let values = [userId];
         let index = 2;
 
         if (startDate !== null) {
-            sets.push(`AND date >= $${index} `);
+            sets.push(` AND date >= $${index}`);
             values.push(startDate);
             index++;
         }
 
         if (endDate !== null) {
-            sets.push(` AND endDate = $${index}`);
+            sets.push(` AND date <= $${index}`);
             values.push(endDate);
             index++;
         }
-
-        query += sets.join(", ");
+        query += sets.join("");
 
         const sqlQuery = {
             text: query,
@@ -112,7 +111,7 @@ const getAllSummaryCustomRange = (startDate = null, endDate = null, userId, tabl
 
 export const getAllIncomesSummaryCustomRange = async (startDate = null, endDate = null, userId) => {
     try {
-        return await getAllSummaryCustomRange(startDate, endDate, userId, 'incomes');
+        return await getAllSummaryCustomRange(startDate, endDate, userId, 'incomes', 'source');
     } catch (err) {
         console.log(err);
         throw err;
@@ -121,7 +120,7 @@ export const getAllIncomesSummaryCustomRange = async (startDate = null, endDate 
 
 export const getAllExpensesSummaryCustomRange = async (startDate = null, endDate = null, userId) => {
     try {
-        return await getAllSummaryCustomRange(startDate, endDate, userId, 'expenses');
+        return await getAllSummaryCustomRange(startDate, endDate, userId, 'expenses', 'reccuring, receipt_upload, start_date, end_date');
     } catch (err) {
         console.log(err);
         throw err;
