@@ -25,20 +25,20 @@ export const findUserExpenses = async (
   let index = 2;
 
   if (startDate) {
-    query +=  AND date >= $${index};
+    query += ` AND date >= $${index}`;
     values.push(startDate);
     index++;
   }
 
   if (endDate) {
-    query +=  AND date <= $${index};
+    query += ` AND date <= $${index}`;
     values.push(endDate);
     index++;
   }
 
   if (reccuring !== null && reccuring !== undefined) {
     const boolValue = reccuring === true || reccuring === "true";
-    query +=  AND reccuring = $${index};
+    query += ` AND reccuring = $${index}`;
     values.push(boolValue);
     index++;
   }
@@ -73,7 +73,7 @@ export const updateExpense = async (id, fields) => {
 
   if (keys.length === 0) throw new Error("No fields to update");
 
-  const sets = keys.map((k, i) => ${k} = $${i + 1}).join(" , ");
+  const sets = keys.map((k, i) => `${k} = $${i + 1}`).join(" , ");
   const values = keys.map((k) => fields[k]);
 
   const query = `
