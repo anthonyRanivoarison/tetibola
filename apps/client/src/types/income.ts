@@ -1,5 +1,14 @@
 export type Income = {
   id: string;
-  creation_date: string;
   amount: number;
+  source: string;
+  description?: string;
+  date: string;
 }
+
+export type IncomeFormData = {
+  amount: string;
+  date: string;
+  source: string;
+  description?: string;
+};

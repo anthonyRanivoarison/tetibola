@@ -5,9 +5,15 @@ import {api} from "../api/base.ts";
 import {Link} from "react-router-dom";
 import Spinner from "../components/ui/Spinner.tsx";
 import type {Expense} from "../types/expenses.ts";
+import {useState} from "react";
+import {Alert, type AlertType} from "../components/ui/Alert.tsx";
 
 const Expenses = () => {
   const theads = ["Date", "Description", "Amount", "Type", "Category", "Actions"];
+  const [alert, setAlert] = useState<{ title: string; content: string; type: AlertType } | null>(
+    null
+  );
+  const [search, setSearch] = useState("");
 
   const {data, error, isLoading} = useFetch({
     method: "GET",
@@ -16,20 +22,29 @@ const Expenses = () => {
     enable: true,
   });
 
+
+  const expenses: Expense[] = data ?? [];
+
   const deleteExpense = async (id: number) => {
     try {
       const response = await api.delete(`../expenses/${id}`, {withCredentials: true});
-      return response.data;
+
+      if (response.status == 200) {
+        setAlert({title: "Success", content: "Expense deleted successfully", type: "success"})
+      }
     } catch (e) {
       console.error("Error deleting expense:", e);
     }
   }
 
-  const expenses: Expense[] = data ?? [];
-  console.log(expenses)
+  const filteredExpenses = expenses.filter(
+    (expense) => expense.description && expense.description.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="p-6">
+      {alert && <Alert title={alert.title} content={alert.content} type={alert.type}/>}
+
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center mb-8">
         <DropdownMenu
           title="Filter by"
@@ -48,6 +63,8 @@ const Expenses = () => {
           <input
             type="text"
             placeholder="Search expenses..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             className="w-full rounded-lg border border-gray-300 pl-9 pr-3 py-2 text-sm text-gray-800 shadow-sm transition focus:border-blue-500 focus:ring focus:ring-blue-100"
           />
         </div>
@@ -61,7 +78,7 @@ const Expenses = () => {
         </a>
       </div>
 
-      {isLoading && <Spinner /> }
+      {isLoading && <Spinner/>}
 
       {error && <p className="text-center text-red-500 py-4">Error fetching expenses.</p>}
 
@@ -81,7 +98,7 @@ const Expenses = () => {
             </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
-            {expenses.map((expense) => (
+            {filteredExpenses.map((expense) => (
               <tr key={expense.id} className="hover:bg-gray-50 transition">
                 <td className="px-4 py-2 text-sm text-gray-700">
                   {expense.reccuring ? (

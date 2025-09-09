@@ -10,6 +10,7 @@ import Receipts from "./pages/Receipts";
 import UserProfile from "./pages/UserProfile";
 import ExpensesPage from "./pages/Expenses";
 import NewExpense from "./pages/newExpense"
+import NewIncome from "./pages/newIncome"
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/expenses" element={<ExpensesPage/>}/>
           <Route path="/expenses/new" element={<NewExpense/>}/>
           <Route path="/incomes" element={<Incomes/>}/>
+          <Route path="/incomes/new" element={<NewIncome/>}/>
           <Route path="/receipts" element={<Receipts/>}/>
           <Route path="/profile" element={<UserProfile/>}/>
         </Route>
