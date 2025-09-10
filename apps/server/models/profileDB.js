@@ -4,7 +4,7 @@ import { connection } from "./connectionToDB.js";
 export const getUserProfile = async ({ userId }) => {
   try {
     const sqlQuery = {
-      text: 'SELECT email, first_name, last_name FROM users WHERE id = $1',
+      text: 'SELECT first_name, last_name FROM users WHERE id = $1',
       values: [userId],
     };
 
