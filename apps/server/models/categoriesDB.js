@@ -3,7 +3,7 @@ import {connection} from "./connectionToDB.js";
 export const getAllCategory = (userId) => {
     try{
         const sqlQuery = {
-            text: 'SELECT DISTINCT(name), is_active FROM category WHERE user_id = $1',
+            text: 'SELECT id, name, is_active FROM category WHERE user_id = $1',
             values: [userId]
         }
         return connection.query(sqlQuery);
@@ -19,20 +19,6 @@ export const insertCategory = (categoryName, userId) => {
         const sqlQuery = {
             text: 'INSERT INTO category (name, user_id) VALUES ($1, $2)',
             values: [categoryName, userId]
-        }
-        return connection.query(sqlQuery);
-    }
-    catch(error){
-        console.error(error);
-        throw error;
-    }
-}
-
-export const getCategoryById = (userId) => {
-    try{
-        const sqlQuery = {
-            text: 'SELECT id FROM category WHERE user_id = $1',
-            values: [userId]
         }
         return connection.query(sqlQuery);
     }
