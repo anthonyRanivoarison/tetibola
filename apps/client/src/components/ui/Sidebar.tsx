@@ -1,75 +1,50 @@
-import React from "react";
-import {Home, LogOut} from "lucide-react";
+import React, {type ReactNode} from "react";
+import {LogOut} from "lucide-react";
 import {NavLink} from "react-router-dom";
 
-type NavGroup = {
+interface SidebarItem {
+  label: string;
+  href: string;
+  icon: ReactNode;
+}
+
+interface SidebarProps {
   title: string;
-  items: {
-    label: string;
-    href: string;
-    icon?: React.ReactNode;
-  }[];
-};
+  items: SidebarItem[];
+}
 
-type AsideProps = {
-  groups: NavGroup[],
-  title?: string,
-  isOpen: boolean
-};
-
-const Sidebar = ({groups, title, isOpen}: AsideProps) => {
+export const Sidebar: React.FC<SidebarProps> = ({title, items}) => {
   return (
-    <aside
-      className={`bg-gray-200 border-r border-gray-400 text-black h-screen p-4 flex flex-col justify-between 
-      transition-all duration-300 ${isOpen ? "w-64" : "w-16"}`}
-    >
+    <aside className="w-64 bg-gray-200 border-r border-gray-400 text-black h-screen p-4 flex flex-col justify-between">
       <div>
-        <h2 className="text-2xl mb-4 flex items-center gap-2 dancing-script-font">
-          <Home size={24}/>
-          {isOpen && <span>{title}</span>}
-        </h2>
-        <hr className="my-4"/>
+        <h2 className="text-3xl font-bold mb-6 dancing-script-font">{title}</h2>
 
-        {groups.map((group, idx) => (
-          <div key={idx} className="mb-4">
-            {isOpen && (
-              <h2 className="text-sm font-semibold mb-2 text-gray-800">
-                {group.title}
-              </h2>
-            )}
-
-            <nav className="space-y-2 text-sm">
-              {group.items.map((item, i) => (
-                <NavLink
-                  key={i}
-                  to={item.href}
-                  title={item.label}
-                  className={({isActive}) =>
-                    `flex items-center gap-3 px-2 py-2 rounded transition ${
-                      isActive
-                        ? "bg-black text-white font-semibold shadow"
-                        : "hover:bg-gray-300"
-                    }`
-                  }
-                >
-                  {item.icon}
-                  {isOpen && <span>{item.label}</span>}
-                </NavLink>
-              ))}
-            </nav>
-          </div>
-        ))}
+        <nav className="space-y-2">
+          {items.map((item, idx) => (
+            <NavLink
+              key={idx}
+              to={item.href}
+              className={({isActive}) =>
+                `flex items-center text-sm gap-3 px-4 py-2 rounded transition ${
+                  isActive
+                    ? "bg-black text-white font-semibold shadow"
+                    : "hover:bg-gray-300"
+                }`
+              }
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </NavLink>
+          ))}
+        </nav>
       </div>
 
       <button
-        className="flex items-center gap-2 px-2 py-2 text-red-500 hover:bg-red-100 rounded-md transition duration-150 ease-in-out"
-        title="Logout"
+        className="flex w-full items-center gap-2 px-4 py-2 text-left text-red-500 hover:bg-red-100 rounded-md transition duration-150 ease-in-out"
       >
         <LogOut size={20} color="red"/>
-        {isOpen && <span>Log Out</span>}
+        Log Out
       </button>
     </aside>
   );
 };
-
-export default Sidebar;

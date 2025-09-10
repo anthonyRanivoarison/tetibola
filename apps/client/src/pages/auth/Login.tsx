@@ -4,31 +4,22 @@ import {api} from "../../api/base";
 import AuthInputs from "../../components/templates/auth-inputs";
 import VerificationCode from "../../components/templates/VerificationCode.tsx";
 import {useVerification} from "../../hooks/verification.tsx";
-import {Alert, type AlertType} from "../../components/ui/Alert.tsx";
 
 const LoginPage = () => {
   const [form, setForm] = useState({email: "", password: ""});
   const [step, setStep] = useState<"login" | "verify">("login");
-  const [alert, setAlert] = useState<{ title: string; content: string; type: AlertType } | null>(
-    null
-  );
 
   const {verificationCode, setVerificationCode, handleVerify} = useVerification(6);
 
   const fetchData = async () => {
-    try {
-      const response = await api.post("/auth/login", {...form});
-      return response.data;
-    } catch (e) {
-      return Promise.reject(e);
-    }
+    const response = await api.post("/auth/login", {...form});
+    return response.data;
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await fetchData();
-      setAlert({title: "Info", content: "Verification code sent", type: "info"});
       setStep("verify");
     } catch (err) {
       console.error(err);
@@ -37,18 +28,17 @@ const LoginPage = () => {
 
   const handleCodeVerification = async () => {
     try {
-      const res = await handleVerify("/auth/login/verification", {clientCode: verificationCode.join("")});
-      console.log(res);
-      // window.location.href = "/dashboard";
+      await handleVerify("/auth/login/verification", {email: form.email});
+      alert("Login success!");
+      window.location.href = "/dashboard";
     } catch (err) {
       console.error(err);
-      setAlert({title: "Error", content: "Invalid code", type: "error"});
+      alert("Invalid code");
     }
   };
 
   return (
     <div className="login-page bg-gray-50 h-screen w-full flex justify-center items-center">
-      {alert && <Alert title={alert.title} content={alert.content} type={alert.type}/>}
       <form
         onSubmit={handleSubmit}
         className="login-form bg-white h-auto w-auto py-6 px-8 shadow-xl text-center flex flex-col justify-center items-center gap-6 rounded-3xl"

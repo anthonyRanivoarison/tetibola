@@ -1,41 +1,41 @@
-import React, {useRef} from "react";
+import React from "react";
 
-type Props = {
+interface VerificationCodeInputProps {
   code: string[];
   setCode: (code: string[]) => void;
   onVerify: () => void;
-};
+}
 
-const VerificationCode: React.FC<Props> = ({code, setCode, onVerify}) => {
-  const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
-
+const VerificationCode: React.FC<VerificationCodeInputProps> = ({code, setCode, onVerify}) => {
   const handleCodeChange = (value: string, index: number) => {
+    if (value.length > 1) return;
     const newCode = [...code];
-    newCode[index] = value.toUpperCase();
+    newCode[index] = value;
     setCode(newCode);
-
-    if (value && index < inputsRef.current.length - 1) {
-      inputsRef.current[index + 1]?.focus();
-    }
-
-    if (newCode.every((c) => c.length === 1)) {
-      onVerify();
-    }
   };
 
   return (
-    <div className="flex gap-2">
-      {code.map((digit, index) => (
-        <input
-          key={index}
-          ref={(el) => inputsRef.current[index] = el}
-          type="text"
-          value={digit}
-          onChange={(e) => handleCodeChange(e.target.value, index)}
-          maxLength={1}
-          className="w-10 h-10 text-center border rounded text-lg border-gray-400 focus:ring-blue-500"
-        />
-      ))}
+    <div className="space-y-4">
+      <p className="text-sm text-gray-600">Enter the 6-digit code sent to your email</p>
+      <div className="flex gap-2 justify-center">
+        {code.map((digit, index) => (
+          <input
+            key={index}
+            type="text"
+            value={digit}
+            onChange={(e) => handleCodeChange(e.target.value, index)}
+            maxLength={1}
+            className="w-10 h-10 text-center border rounded text-lg"
+          />
+        ))}
+      </div>
+      <button
+        type="button"
+        onClick={onVerify}
+        className="w-full bg-green-600 text-white py-2 rounded"
+      >
+        Verify Account
+      </button>
     </div>
   );
 };
