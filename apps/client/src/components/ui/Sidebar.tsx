@@ -17,8 +17,10 @@ export const Sidebar: React.FC<SidebarProps> = ({title, items}) => {
   return (
     <aside className="w-64 bg-gray-200 border-r border-gray-400 text-black h-screen p-4 flex flex-col justify-between">
       <div>
-        <h2 className="text-3xl font-bold mb-6 dancing-script-font">{title}</h2>
-
+        <div className="flex flex-row items-center mb-6 justify-center gap-1 mr-5">
+        <img src="../../LOGO light mode.png" className="w-[4rem] "></img>
+        <h2 className="text-3xl font-bold dancing-script-font">{title}</h2>
+        </div>
         <nav className="space-y-2">
           {items.map((item, idx) => (
             <NavLink
