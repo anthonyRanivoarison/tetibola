@@ -5,8 +5,8 @@ import { verifyAuthToken } from "../controllers/authControllers.js";
 const profileRouter = express.Router();
 
 
-router.get("/", verifyAuthToken, getProfile);
-router.post("/", verifyAuthToken, createProfile);
-router.put("/", verifyAuthToken, updateProfile);
+profileRouter.get("/", verifyAuthToken, getProfile);
+profileRouter.post("/", verifyAuthToken, createProfile);
+profileRouter.put("/", verifyAuthToken, updateProfile);
 
 export default profileRouter;
