@@ -39,7 +39,7 @@ const UserProfile: React.FC = () => {
         <div className="bg-red-100 text-red-700 px-6 py-4 rounded-lg flex items-center gap-2 shadow">
           <AlertTriangle className="w-5 h-5" />
           <span>
-            Erreur lors du chargement du profil : {error ? String(error) : "Utilisateur introuvable"}
+            Error loading profile : {error ? String(error) : "User no found"}
           </span>
         </div>
       </div>
@@ -72,7 +72,7 @@ const UserProfile: React.FC = () => {
           <p className="text-gray-500">{email}</p>
           {user.creationDate && (
             <p className="text-xs text-gray-400">
-              Membre depuis le {new Date(user.creationDate).toLocaleDateString()}
+              Member since {new Date(user.creationDate).toLocaleDateString()}
             </p>
           )}
 
@@ -83,7 +83,7 @@ const UserProfile: React.FC = () => {
               aria-label="Modifier le profil"
               >
               <Edit className="w-4 h-4" />
-              Modifier
+              Modified
             </button>
             <button
               onClick={logout}
@@ -91,7 +91,7 @@ const UserProfile: React.FC = () => {
               aria-label="Déconnexion"
               >
               <LogOut className="w-4 h-4" />
-              Déconnexion
+              Log out 
             </button>
           </div>
         </div>
