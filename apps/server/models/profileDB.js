@@ -4,7 +4,7 @@ import { connection } from "./connectionToDB.js";
 export const getUserProfile = async ({ userId }) => {
   try {
     const sqlQuery = {
-      text: 'SELECT email, first_name, last_name FROM users WHERE id = $1',
+      text: 'SELECT first_name, last_name FROM users WHERE id = $1',
       values: [userId],
     };
 
@@ -26,7 +26,7 @@ export const createUserProfile = async ({ firstName, lastName, userId }) => {
                     SET first_name = $1,
                     last_name = $2
                     WHERE id = $3
-                    RETURNING email, first_name, last_name`,
+                    RETURNING first_name, last_name`,
       values: [firstName, lastName, userId],
     };
 
@@ -47,7 +47,7 @@ export const updateFirstName = async ({ firstName, userId }) => {
       text:    `UPDATE users
                 SET first_name = $1
                 WHERE id = $2
-                RETURNING email, first_name, last_name`,
+                RETURNING first_name, last_name`,
       values: [firstName, userId],
     };
     
@@ -68,7 +68,7 @@ export const updateLastName = async ({ lastName, userId }) => {
       text:        `UPDATE users
                     SET last_name = $1
                     WHERE id = $2
-                    RETURNING email, first_name, last_name`,
+                    RETURNING first_name, last_name`,
       values: [lastName, userId],
     }; 
 
