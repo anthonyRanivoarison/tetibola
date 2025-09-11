@@ -1,8 +1,8 @@
 import {useFetch} from "../../hooks/api.tsx";
 
 interface UserProfile {
-  firstName: string;
-  lastName?: string;
+  first_name: string;
+  last_name?: string;
   email: string;
 }
 
@@ -26,8 +26,8 @@ const ProfileOnPanel = ({user}: ProfileOnPanelProps) => {
 
   const profileUser = profile ?? user;
 
-  const firstName = profileUser?.firstName || "Guest";
-  const lastName = profileUser?.lastName || "";
+  const firstName = profileUser?.first_name || "Guest";
+  const lastName = profileUser?.last_name || "";
   const email = profileUser?.email || "no-email@example.com";
 
   return (
