@@ -10,7 +10,7 @@ import {
 
 export const getProfile = async (req, res) => {
   try {
-    const { userId } = req.user;
+    const { userId } = req.user.id;
     const profile = await getUserProfile({ userId });
 
     if (!profile) {
@@ -29,7 +29,7 @@ export const getProfile = async (req, res) => {
 
 export const createProfile = async (req, res) => {
   try {
-    const { userId } = req.user;
+    const { userId } = req.user.id;
     const { firstName, lastName } = req.body;
     const data = await getUserProfile({ userId });
 
@@ -53,7 +53,7 @@ export const createProfile = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    const { userId } = req.user;
+    const { userId } = req.user.id;
     const { firstName, lastName } = req.body;
 
 
