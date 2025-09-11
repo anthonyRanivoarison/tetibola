@@ -4,37 +4,62 @@ import {api} from "../api/base.ts";
 import {Link} from "react-router-dom";
 import Spinner from "../components/ui/Spinner.tsx";
 import type {Expense} from "../types/expenses.ts";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {Alert, type AlertType} from "../components/ui/Alert.tsx";
 
 const Expenses = () => {
   const theads = ["Date", "Description", "Amount", "Type", "Category", "Actions"];
   const [search, setSearch] = useState("");
+  const [alert, setAlert] = useState<{ title: string; content: string; type: AlertType } | null>(
+    null
+  );
 
-  const {data, error, isLoading} = useFetch({
+  const {data: expenses = [], error, isLoading} = useFetch<Expense[]>({
     method: "GET",
     url: "../expenses",
     keys: ["expenses"],
     enable: true,
   });
 
+  const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([]);
+
+  useEffect(() => {
+    if (!expenses) return;
+
+    const filtered = expenses.filter(
+      (expense) =>
+        expense.description &&
+        expense.description.toLowerCase().includes(search.toLowerCase())
+    );
+
+    setFilteredExpenses(filtered);
+  }, [expenses, search]);
+
   const deleteExpense = async (id: number) => {
     try {
       const response = await api.delete(`../expenses/${id}`, {withCredentials: true});
+      setAlert({
+        title: "Success",
+        content: "Expense deleted successfully!",
+        type: "success",
+      });
+
+      setFilteredExpenses((prev) => prev.filter((e) => e.id !== id));
       return response.data;
     } catch (e) {
       console.error("Error deleting expense:", e);
+      setAlert({
+        title: "Error",
+        content: "Failed to delete expense",
+        type: "error",
+      });
     }
-  }
+  };
 
-  const expenses: Expense[] = data ?? [];
-
-  const filteredExpenses = expenses.filter(
-    (expense) =>
-      expense.description && expense.description.toLowerCase().includes(search.toLowerCase())
-  );
 
   return (
     <div className="p-6">
+      {alert && <Alert title={alert.title} content={alert.content} type={alert.type}/>}
       <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
         <h2 className="text-2xl font-bold">Expenses</h2>
       </div>
