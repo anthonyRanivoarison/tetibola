@@ -10,10 +10,13 @@ import Receipts from "./pages/Receipts";
 import UserProfile from "./pages/UserProfile";
 import ExpensesPage from "./pages/Expenses";
 import NewExpense from "./pages/newExpense"
+import NewIncome from "./pages/NewIncome"
+import {Toaster} from "react-hot-toast";
 
 const App = () => {
   return (
     <BrowserRouter>
+        <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<Home/>}/>
         <Route path="/login" element={<LoginPage/>}/>
@@ -25,6 +28,7 @@ const App = () => {
           <Route path="/expenses" element={<ExpensesPage/>}/>
           <Route path="/expenses/new" element={<NewExpense/>}/>
           <Route path="/incomes" element={<Incomes/>}/>
+          <Route path="/incomes/new" element={<NewIncome/>}/>
           <Route path="/receipts" element={<Receipts/>}/>
           <Route path="/profile" element={<UserProfile/>}/>
         </Route>

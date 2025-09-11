@@ -1,52 +1,76 @@
-import React, {type ReactNode} from "react";
-import {LogOut} from "lucide-react";
+import React from "react";
+import {Home, LogOut} from "lucide-react";
 import {NavLink} from "react-router-dom";
+import {useLogout} from "../../hooks/logout.ts";
 
-interface SidebarItem {
-  label: string;
-  href: string;
-  icon: ReactNode;
-}
-
-interface SidebarProps {
+type NavGroup = {
   title: string;
-  items: SidebarItem[];
-}
+  items: {
+    label: string;
+    href: string;
+    icon?: React.ReactNode;
+  }[];
+};
 
-export const Sidebar: React.FC<SidebarProps> = ({title, items}) => {
+type AsideProps = {
+  groups: NavGroup[];
+  title?: string;
+  isOpen: boolean;
+};
+
+const Sidebar = ({groups, title, isOpen}: AsideProps) => {
+  const logout = useLogout();
+
   return (
-    <aside className="w-64 bg-gray-200 border-r border-gray-400 text-black h-screen p-4 flex flex-col justify-between">
+    <aside
+      className={`text-black h-screen p-4 flex flex-col justify-between
+      transition-all duration-300 ${isOpen ? "w-64" : "w-16"}`}
+    >
       <div>
-        <div className="flex flex-row items-center mb-6 justify-center gap-1 mr-5">
-        <img src="../../LOGO light mode.png" className="w-[4rem] "></img>
-        <h2 className="text-3xl font-bold dancing-script-font">{title}</h2>
+        <div className="flex flex-row items-center mb-6 justify-center gap-2">
+          <img src="../../LOGO light mode.png" className="w-[4rem]" alt="Logo" />
+          {isOpen && <h2 className="text-3xl font-bold dancing-script-font">{title}</h2>}
         </div>
-        <nav className="space-y-2">
-          {items.map((item, idx) => (
-            <NavLink
-              key={idx}
-              to={item.href}
-              className={({isActive}) =>
-                `flex items-center text-sm gap-3 px-4 py-2 rounded transition ${
-                  isActive
-                    ? "bg-black text-white font-semibold shadow"
-                    : "hover:bg-gray-300"
-                }`
-              }
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
-        </nav>
+
+        {groups.map((group, idx) => (
+          <div key={idx} className="mb-6">
+            {isOpen && (
+              <h2 className="text-sm font-semibold mb-2 text-gray-800">
+                {group.title}
+              </h2>
+            )}
+            <nav className="space-y-2">
+              {group.items.map((item, i) => (
+                <NavLink
+                  key={i}
+                  to={item.href}
+                  title={item.label}
+                  className={({isActive}) =>
+                    `flex items-center gap-3 px-2 py-2 rounded transition text-sm ${
+                      isActive
+                        ? "bg-black text-white font-semibold shadow"
+                        : "hover:bg-gray-300"
+                    }`
+                  }
+                >
+                  {item.icon}
+                  {isOpen && <span>{item.label}</span>}
+                </NavLink>
+              ))}
+            </nav>
+          </div>
+        ))}
       </div>
 
       <button
-        className="flex w-full items-center gap-2 px-4 py-2 text-left text-red-500 hover:bg-red-100 rounded-md transition duration-150 ease-in-out"
+        className="flex items-center gap-2 px-2 py-2 text-red-500 hover:bg-red-100 rounded-md transition duration-150 ease-in-out"
+        onClick={logout}
       >
-        <LogOut size={20} color="red"/>
-        Log Out
+        <LogOut size={20} color="red" />
+        {isOpen && <span>Log Out</span>}
       </button>
     </aside>
   );
 };
+
+export default Sidebar;
