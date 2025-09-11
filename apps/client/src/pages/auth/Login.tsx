@@ -4,10 +4,14 @@ import {api} from "../../api/base";
 import AuthInputs from "../../components/templates/auth-inputs";
 import VerificationCode from "../../components/templates/VerificationCode.tsx";
 import {useVerification} from "../../hooks/verification.tsx";
+import {Alert, type AlertType} from "../../components/ui/Alert.tsx";
 
 const LoginPage = () => {
   const [form, setForm] = useState({email: "", password: ""});
   const [step, setStep] = useState<"login" | "verify">("login");
+  const [alert, setAlert] = useState<{ title: string; content: string; type: AlertType } | null>(
+    null
+  );
 
   const {verificationCode, setVerificationCode, handleVerify} = useVerification(6);
 
@@ -29,16 +33,18 @@ const LoginPage = () => {
   const handleCodeVerification = async () => {
     try {
       await handleVerify("/auth/login/verification", {email: form.email});
-      alert("Login success!");
+      setAlert({title: "Success", content: "Welcome back !", type: "success"});
       window.location.href = "/dashboard";
     } catch (err) {
       console.error(err);
-      alert("Invalid code");
+      setAlert({title: "Error", content: "Invalid code. Please try again...", type: "error"});
+      window.location.reload();
     }
   };
 
   return (
     <div className="login-page bg-gray-50 h-screen w-full flex justify-center items-center">
+      {alert && <Alert title={alert.title} content={alert.content} type={alert.type}/>}
       <form
         onSubmit={handleSubmit}
         className="login-form bg-white h-auto w-auto py-6 px-8 shadow-xl text-center flex flex-col justify-center items-center gap-6 rounded-3xl"

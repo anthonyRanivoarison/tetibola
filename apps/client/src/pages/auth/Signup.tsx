@@ -1,10 +1,10 @@
 import React, {useState} from "react";
-import {useFetch} from "../../hooks/api";
 import {Alert} from "../../components/ui/Alert";
 import {ArrowRight, ChevronLeft, Lock} from "lucide-react";
 import AuthInputs from "../../components/templates/auth-inputs";
 import VerificationCodeInput from "../../components/templates/VerificationCode";
 import {useVerification} from "../../hooks/verification";
+import {api} from "../../api/base";
 
 type AlertType = "error" | "success" | "info";
 
@@ -22,13 +22,14 @@ const SignupPage = () => {
 
   const {verificationCode, setVerificationCode, handleVerify} = useVerification(6);
 
-  const {error, isLoading, refetch} = useFetch({
-    url: "/auth/signup",
-    method: "POST",
-    data: form,
-    keys: ["auth", form.email],
-    enable: false,
-  });
+  const postData = async () => {
+    try {
+      const res = await api.post("/auth/signup", form);
+      return res.data;
+    } catch (e) {
+      console.log(e, "error")
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,12 +40,11 @@ const SignupPage = () => {
     }
 
     try {
-      await refetch();
-      setStep("verify");
+      await postData();
       setAlert({title: "Info", content: `Verification code sent to ${form.email}`, type: "info"});
+      setStep("verify");
     } catch (err) {
-      console.error(err);
-      setAlert({title: "Error", content: "Signup failed", type: "error"});
+      console.error(err)
     }
   };
 
@@ -59,10 +59,9 @@ const SignupPage = () => {
     }
   };
 
-  if (error) setAlert({title: "Error", content: "Sending data failed", type: "error"});
 
   return (
-    <div className="signup-page bg-gray-50 h-screen w-full flex justify-center items-center">
+    <div className="signup-page h-screen w-full flex justify-center items-center">
       {alert && <Alert title={alert.title} content={alert.content} type={alert.type}/>}
 
       <form
@@ -101,7 +100,8 @@ const SignupPage = () => {
             type="submit"
             className="flex items-center justify-center gap-1 bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-800 transition w-64 sm:w-78"
           >
-            {isLoading ? "Loading..." : "Submit"}
+            {/*{isLoading ? "Loading..." : "Submit"}*/}
+            Submit
             <ArrowRight/>
           </button>
         )}
