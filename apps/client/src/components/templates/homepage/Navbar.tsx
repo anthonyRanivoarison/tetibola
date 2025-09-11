@@ -34,9 +34,7 @@ export default function Navbar() {
       </div>
 
       <div className="flex items-center gap-6">
-        {isAuthenticated === null ? (
-          <span className="text-gray-400">Loading...</span>
-        ) : isAuthenticated ? (
+        {isAuthenticated ? (
           <>
             <Link
               to="/dashboard"
