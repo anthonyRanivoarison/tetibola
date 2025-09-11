@@ -13,9 +13,9 @@ type NavGroup = {
 };
 
 type AsideProps = {
-  groups: NavGroup[],
-  title?: string,
-  isOpen: boolean
+  groups: NavGroup[];
+  title?: string;
+  isOpen: boolean;
 };
 
 const Sidebar = ({groups, title, isOpen}: AsideProps) => {
@@ -27,10 +27,10 @@ const Sidebar = ({groups, title, isOpen}: AsideProps) => {
       transition-all duration-300 ${isOpen ? "w-64" : "w-16"}`}
     >
       <div>
-        <h2 className="text-3xl mb-4 flex items-center gap-2 dancing-script-font">
-          <Home size={24}/>
-          {isOpen && <span>{title}</span>}
-        </h2>
+        <div className="flex flex-row items-center mb-6 justify-center gap-2">
+          <img src="../../LOGO light mode.png" className="w-[4rem]" alt="Logo" />
+          {isOpen && <h2 className="text-3xl font-bold dancing-script-font">{title}</h2>}
+        </div>
 
         {groups.map((group, idx) => (
           <div key={idx} className="mb-6">
@@ -39,7 +39,6 @@ const Sidebar = ({groups, title, isOpen}: AsideProps) => {
                 {group.title}
               </h2>
             )}
-
             <nav className="space-y-2">
               {group.items.map((item, i) => (
                 <NavLink
@@ -67,7 +66,7 @@ const Sidebar = ({groups, title, isOpen}: AsideProps) => {
         className="flex items-center gap-2 px-2 py-2 text-red-500 hover:bg-red-100 rounded-md transition duration-150 ease-in-out"
         onClick={logout}
       >
-        <LogOut size={20} color="red"/>
+        <LogOut size={20} color="red" />
         {isOpen && <span>Log Out</span>}
       </button>
     </aside>
