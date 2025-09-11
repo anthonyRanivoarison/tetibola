@@ -11,10 +11,12 @@ import UserProfile from "./pages/UserProfile";
 import ExpensesPage from "./pages/Expenses";
 import NewExpense from "./pages/newExpense"
 import NewIncome from "./pages/NewIncome"
+import {Toaster} from "react-hot-toast";
 
 const App = () => {
   return (
     <BrowserRouter>
+        <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<Home/>}/>
         <Route path="/login" element={<LoginPage/>}/>

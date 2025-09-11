@@ -1,11 +1,10 @@
-import {Edit, Trash2, Search, Plus, ListFilter, Settings, LogOut} from "lucide-react";
-import {DropdownMenu} from "../components/ui/DropdownMenu.tsx";
+import {Edit, Trash2, Search, Plus} from "lucide-react";
 import {useFetch} from "../hooks/api.tsx";
 import {api} from "../api/base.ts";
 import {Link} from "react-router-dom";
 import Spinner from "../components/ui/Spinner.tsx";
 import type {Expense} from "../types/expenses.ts";
-import React, {useState} from "react";
+import {useState} from "react";
 
 const Expenses = () => {
   const theads = ["Date", "Description", "Amount", "Type", "Category", "Actions"];

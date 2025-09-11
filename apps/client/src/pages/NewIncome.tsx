@@ -33,10 +33,10 @@ const NewIncome: React.FC = () => {
   useEffect(() => {
     if (incomeData) {
       setForm({
-        amount: incomeData.amount,
-        date: incomeData.date?.split("T")[0] || "",
-        source: incomeData.source || "",
-        description: incomeData.description || "",
+        amount: incomeData[0].amount,
+        date: incomeData[0].date?.split("T")[0] || "",
+        source: incomeData[0].source || "",
+        description: incomeData[0].description || "",
       });
     }
   }, [incomeData]);

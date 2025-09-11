@@ -3,6 +3,7 @@ import PieChart from "../components/ui/PieChart";
 import BarChart from "../components/ui/BarChart";
 import type {Summary} from "../types/summary.ts";
 import Spinner from "../components/ui/Spinner.tsx";
+import ExpenseAlert from "../components/templates/ExpenseAlert.tsx";
 
 const Dashboard = () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -21,6 +22,7 @@ const Dashboard = () => {
 
   return (
     <div className="p-6 space-y-6">
+      <ExpenseAlert />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
         <div className="bg-blue-100 p-4 rounded-xl shadow">
           <h3 className="text-lg font-semibold">Incomes</h3>

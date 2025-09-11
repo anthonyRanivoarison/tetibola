@@ -26,13 +26,11 @@ const NewExpense: React.FC = () => {
   const navigate = useNavigate();
 
   const {data: expenseData, error, isLoading} = useFetch({
-    url: expenseID ? `../expenses/${expenseID}` : "../expenses",
+    url: expenseID ? `../expenses/${expenseID}` : null,
     method: "GET",
     keys: ["expense"],
     enable: !!expenseID,
   });
-
-  if (isLoading) return <Spinner />
 
   useEffect(() => {
     if (expenseData) {
@@ -48,6 +46,10 @@ const NewExpense: React.FC = () => {
       });
     }
   }, [expenseData]);
+
+  if (isLoading) return <Spinner/>;
+  if (error) return <Alert title="Error" type="error" content="Error loading expense"/>;
+
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const {name, value, files} = e.target;
