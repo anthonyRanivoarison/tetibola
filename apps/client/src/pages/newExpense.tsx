@@ -1,5 +1,5 @@
 import React, {useState, useEffect, type ChangeEvent, type FormEvent} from "react";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {Button} from "../components/ui/Button";
 import {Input} from "../components/ui/Input";
 import {Alert} from "../components/ui/Alert";
@@ -23,15 +23,16 @@ const NewExpense: React.FC = () => {
 
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [message, setMessage] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  const {data: expenseData, error, loading} = useFetch({
+  const {data: expenseData, error, isLoading} = useFetch({
     url: expenseID ? `../expenses/${expenseID}` : "../expenses",
     method: "GET",
     keys: ["expense"],
     enable: !!expenseID,
   });
 
-  if (loading) return <Spinner />
+  if (isLoading) return <Spinner />
 
   useEffect(() => {
     if (expenseData) {
@@ -74,6 +75,7 @@ const NewExpense: React.FC = () => {
       });
 
       setForm({amount: "", category: "", description: "", type: "One-time", receipt: null});
+      navigate("../expenses")
       setStatus("idle");
     } catch (err: any) {
       setStatus("error");
@@ -81,11 +83,11 @@ const NewExpense: React.FC = () => {
     }
   };
 
-  if (loading) return <Spinner/>;
+  if (isLoading) return <Spinner/>;
   if (error) return <Alert title="Error" type="error" content="Error loading expense"/>;
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-5xl mx-auto p-4 space-y-4 bg-gray-50 rounded-lg">
+    <form onSubmit={handleSubmit} className="w-full max-w-5xl mx-auto p-4 space-y-4 rounded-lg">
       {status === "error" && message && <Alert title="Error" type="error" content={message}/>}
       <h2 className="text-2xl font-bold text-gray-800">{expenseID ? "Edit Expense" : "Add Expense"}</h2>
 

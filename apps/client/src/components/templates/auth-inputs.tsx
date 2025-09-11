@@ -25,7 +25,7 @@ const AuthInputs = ({data, setData, showConfirmPassword = true}: InputsProps) =>
         value={data.email ?? ""}
         onChange={handleChange}
         Icon={Mail}
-        placeholder="•••••••••••••••••"
+        placeholder="example@gmail.com"
       />
       <AuthInput
         label="Password"
